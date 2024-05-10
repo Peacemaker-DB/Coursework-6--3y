@@ -1,43 +1,13 @@
-FROM php:8.1-fpm
+FROM node:14
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl
+WORKDIR /app/frontend
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY package*.json ./
 
-RUN docker-php-ext-install gd
+RUN npm install
 
-RUN curl -sS https://getcomposer.org/installer | php --install-dir=/usr/local/bin --filename=composer
+COPY . .
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash 
-RUN apt-get update && apt-get install -y nodejs
+EXPOSE 3000
 
-RUN cd /var/www && composer install
-
-COPY . /var/www
-
-RUN chown -R www-data:www-data /var/www
-RUN chmod 755 /var/www
-
-RUN composer install
-
-FROM node:22-slim
-RUN npm install npm@latest -g
-
-WORKDIR /var/www
-COPY composer.json ./
-
-
-CMD php artisan serve --host=0.0.0.0 --port=8181
-
-EXPOSE 8181
+CMD ["npm", "start"]
