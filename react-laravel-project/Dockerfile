@@ -1,6 +1,6 @@
 FROM node:14
 
-WORKDIR /app/frontend
+WORKDIR /Coursework-6--3y/react-laravel-front
 
 COPY package*.json ./
 
